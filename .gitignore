@@ -1,0 +1,12 @@
+data-builders/csv-builders/node_modules
+data/csv-data/test+train.csv
+data/csv-data/metadata.csv
+data/image-data/images
+data/image-data/test-images
+data/image-data/cropped-images
+data/image-data/train-images
+.DS_Store
+data/.DS_Store
+data/image-data/.DS_Store
+data-builders/.DS_Store
+data-builders/csv-builders/image-names.js
