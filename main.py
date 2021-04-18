@@ -6,44 +6,40 @@ import os
 import torch.nn.functional as F
 from buildTrainData import *
 from buildTestData import *
+from net import Net
 
-train = TrainingData()
+FILE = 'model.pth'
+
 test = TestingData()
-
-trainset = torch.utils.data.DataLoader(train, batch_size=10, shuffle=True)
 testset = torch.utils.data.DataLoader(test, batch_size=10, shuffle=False)
 
-class Net(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.fc1 = nn.Linear(132, 64)
-        self.fc2 = nn.Linear(64, 64)
-        self.fc3 = nn.Linear(64, 64)
-        self.fc4 = nn.Linear(64, 41)
 
-    def forward(self, x):
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        x = self.fc4(x)
-        return F.log_softmax(x, dim=1)
+try: 
+    net = Net()
+    net.load_state_dict(torch.load(FILE))
+    net.eval()
+    for param in net.parameters():
+        print(param)
+except:
+    train = TrainingData()
+    trainset = torch.utils.data.DataLoader(train, batch_size=10, shuffle=True)
+    net = Net()
 
-net = Net()
+    import torch.optim as optim
 
-import torch.optim as optim
+    loss_function = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-loss_function = nn.CrossEntropyLoss()
-optimizer = optim.Adam(net.parameters(), lr=0.001)
+    for epoch in range(10): # 3 full passes over the data
+        for data in trainset:  # `data` is a batch of data
+            X, y = data  # X is the batch of features, y is the batch of targets.
+            net.zero_grad()  # sets gradients to 0 before loss calc. You will do this likely every step.
+            output = net(X)  # pass in the reshaped batch (recall they are 28x28 atm)
+            loss = F.nll_loss(output, y.squeeze().long())  # calc and grab the loss value
+            loss.backward()  # apply this loss backwards thru the network's parameters
+            optimizer.step()  # attempt to optimize weights to account for loss/gradients
+        print(loss)  # print loss. We hope loss (a measure of wrong-ness) declines! 
 
-for epoch in range(10): # 3 full passes over the data
-    for data in trainset:  # `data` is a batch of data
-        X, y = data  # X is the batch of features, y is the batch of targets.
-        net.zero_grad()  # sets gradients to 0 before loss calc. You will do this likely every step.
-        output = net(X)  # pass in the reshaped batch (recall they are 28x28 atm)
-        loss = F.nll_loss(output, y.squeeze().long())  # calc and grab the loss value
-        loss.backward()  # apply this loss backwards thru the network's parameters
-        optimizer.step()  # attempt to optimize weights to account for loss/gradients
-    print(loss)  # print loss. We hope loss (a measure of wrong-ness) declines! 
 
 
 correct = 0
@@ -59,7 +55,10 @@ with torch.no_grad():
                 correct += 1
             total += 1
 
-print("Accuracy: ", round(correct/total, 3))
+accuracy = round(correct/total, 3)
+print("Accuracy: ", accuracy)
 
-# print(X[0])
-# print(torch.argmax(net(X[0])[0]))
+
+if accuracy > 0.97 and not os.path.exists(FILE):
+    torch.save(net.state_dict(), FILE)
+
