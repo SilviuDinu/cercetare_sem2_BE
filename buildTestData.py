@@ -13,12 +13,14 @@ class TestingData(torch.utils.data.Dataset):
     def __init__(self):
 
         curr = os.path.dirname(__file__)
-        testCSVPath = input("Path to training data: ")
+        testCSVPath = input("Path to testing data: ")
 
         if not testCSVPath:
             testCSVPath = os.path.join(curr, r'data/csv-data/Testing.csv')
 
         testing_csv_output = os.path.join(curr, r'data/csv-data/processed_testing.csv')
+
+        diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 
         if not os.path.exists(testing_csv_output):
             raw = []
@@ -34,17 +36,11 @@ class TestingData(torch.utils.data.Dataset):
 
             raw_copy = raw
             self.raw = raw
-            raw_diseases = []
-        
-            for data in raw_copy:
-                curr = data[len(data) - 1]
-                raw_diseases.append(curr)
-
-            filtered_diseases = list(set(raw_diseases))
-
             mapped_diseases = []
-            for idx, disease in enumerate(filtered_diseases):
-                mapped_diseases.append([idx, disease])
+            with open(diseases_path, "r") as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                for idx, rows in enumerate(csv_reader):
+                    mapped_diseases.append(rows)
 
             self.diseases = mapped_diseases
 
