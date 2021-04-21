@@ -37,7 +37,6 @@ def get_symptoms():
     mapped = []
     
     for idx, symp in enumerate(raw):
-        print(symp)
         if '_' in symp:
             new_symp = ' '.join(symp.split('_'))
         else:
@@ -51,15 +50,14 @@ def get_symptoms():
 def predict():
     ids = request.get_json()['ids']
     req_symtpoms = request.get_json()['symptoms']
-    print(req_symtpoms)
 
     net = Net()
     net.load_state_dict(torch.load(FILE))
     net.eval()
-    input = []
 
     curr = os.path.dirname(__file__)
-    path = os.path.join(curr, r'data/csv-data/Training.csv')
+    path = os.path.join(curr, r'data/csv-data/Testing.csv')
+    diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 
     with open(path, "r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -67,20 +65,31 @@ def predict():
             if idx == 0:
                 symptoms = rows[0:len(rows)-1]
             
+    for id in ids:
+        symptoms[id] = 1
+        
     for idx, symptom in enumerate(symptoms):
-        for id in ids:
-            if id == idx:
-                input.append(1)
-            else:
-                input.append(0)
+        if type(symptom) == str and symptom != 1:
+            symptoms[idx] = 0
 
-    print(input)
-    print(len(input))
-            
-    # data = torch.from_numpy(np.array(ids, dtype='float32'))
-    # print(data)
-    # X, y = data
-    # output = net(X)
-    return Response(json.dumps({'success': 'ok'}), mimetype='application/json')
+    # THIS IS TO GRAB FIRST ROW FROM TESTING.CSV AND DOUBLE CHECK THE MODEL
+    # with open(path, "r") as csv_file:
+    #     csv_reader = csv.reader(csv_file, delimiter=',')
+    #     for idx, rows in enumerate(csv_reader):
+    #         if idx == 1:
+    #             symptoms = rows[0:len(rows)-1]
+    
+    arr = np.array(symptoms, dtype=np.float32)
+    X = torch.from_numpy(arr)
+    output = net(X.view(1, 132))
+    disease_id = torch.argmax(output[0])
+
+    with open(diseases_path, "r") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for idx, rows in enumerate(csv_reader):
+            if disease_id == torch.tensor(int(rows[0])):
+                disease_value = rows[1]
+
+    return Response(json.dumps({'id': int(disease_id), 'disease': disease_value}), mimetype='application/json')
 
 app.run()
