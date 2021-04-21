@@ -11,4 +11,4 @@ data/image-data/.DS_Store
 data-builders/.DS_Store
 data-builders/csv-builders/image-names.js
 buildTrainData.py
-__pycache__/buildTrainData.cpython-39.pyc
+__pycache__
