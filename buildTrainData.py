@@ -13,12 +13,10 @@ class TrainingData(torch.utils.data.Dataset):
     def __init__(self):
 
         curr = os.path.dirname(__file__)
-        trainCSVPath = input("Path to training data: ")
+       
+        trainCSVPath = os.path.join(curr, r'data/csv-data/Training.csv')
 
-        if not trainCSVPath:
-            trainCSVPath = os.path.join(curr, r'data/csv-data/Training.csv')
-
-        training_csv_output = os.path.join(curr, r'data/csv-data/processed_training.csv')
+        training_csv_output = os.path.join(curr, r'data/csv-data/processed_training_2.csv')
 
         diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 
@@ -90,6 +88,7 @@ class TrainingData(torch.utils.data.Dataset):
                         data[index] = disease[0]
                 if elem == '1' or elem == '0':
                     data[index] = int(elem)
+        
         
         with open(training_csv_output, 'w', newline='') as file:
             write = csv.writer(file)

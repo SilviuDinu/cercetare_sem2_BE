@@ -7,19 +7,27 @@ import torch.nn.functional as F
 from buildTrainData import *
 from buildTestData import *
 from net import Net
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import plot_confusion_matrix
+import numpy as np
+# np.set_printoptions(threshold=np.inf)
 
-FILE = 'model.pth'
+nb_classes = 41
+FILE = 'model2.pth'
+
 
 test = TestingData()
 testset = torch.utils.data.DataLoader(test, batch_size=10, shuffle=False)
+
 
 
 try: 
     net = Net()
     net.load_state_dict(torch.load(FILE))
     net.eval()
-    for param in net.parameters():
-        print(param)
+    # for param in net.parameters():
+    #     print(param)
 except:
     train = TrainingData()
     trainset = torch.utils.data.DataLoader(train, batch_size=10, shuffle=True)
@@ -45,12 +53,17 @@ except:
 correct = 0
 total = 0
 
+preds = []
+targets = []
+
 with torch.no_grad():
     for data in testset:
         X, y = data
         output = net(X)
         for idx, i in enumerate(output):
-            print(torch.argmax(i), y[idx])
+            # print(torch.argmax(i), y[idx])
+            preds.append(torch.argmax(i).long())
+            targets.append(y[idx].squeeze().long())
             if torch.argmax(i) == y[idx]:
                 correct += 1
             total += 1
@@ -58,6 +71,26 @@ with torch.no_grad():
 accuracy = round(correct/total, 3)
 print("Accuracy: ", accuracy)
 
+preds = torch.tensor(preds)
+targets = torch.tensor(targets)
+conf_matrix = confusion_matrix(targets, preds)
+conf_matrix = torch.tensor(conf_matrix)
+
+print('Confusion matrix\n', conf_matrix)
+
+TP = np.diag(conf_matrix)
+for c in range(nb_classes):
+    idx = torch.ones(nb_classes).byte()
+    idx[c] = 0
+    # all non-class samples classified as non-class
+    TN = conf_matrix[idx.nonzero()[:, None], idx.nonzero()].sum() #conf_matrix[idx[:, None], idx].sum() - conf_matrix[idx, c].sum()
+    # all non-class samples classified as class
+    FP = conf_matrix[idx, c].sum()
+    # all class samples not classified as class
+    FN = conf_matrix[c, idx].sum()
+    
+    print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(
+        c, TP[c], TN, FP, FN))
 
 if accuracy > 0.97 and not os.path.exists(FILE):
     torch.save(net.state_dict(), FILE)

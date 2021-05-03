@@ -13,12 +13,10 @@ class TestingData(torch.utils.data.Dataset):
     def __init__(self):
 
         curr = os.path.dirname(__file__)
-        testCSVPath = input("Path to testing data: ")
 
-        if not testCSVPath:
-            testCSVPath = os.path.join(curr, r'data/csv-data/Testing.csv')
+        testCSVPath = os.path.join(curr, r'data/csv-data/Testing.csv')
 
-        testing_csv_output = os.path.join(curr, r'data/csv-data/processed_testing.csv')
+        testing_csv_output = os.path.join(curr, r'data/csv-data/processed_testing_2.csv')
 
         diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 
