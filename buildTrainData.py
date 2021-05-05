@@ -16,7 +16,7 @@ class TrainingData(torch.utils.data.Dataset):
        
         trainCSVPath = os.path.join(curr, r'data/csv-data/Training.csv')
 
-        training_csv_output = os.path.join(curr, r'data/csv-data/processed_training_2.csv')
+        training_csv_output = os.path.join(curr, r'data/csv-data/processed_training.csv')
 
         diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 

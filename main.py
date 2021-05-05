@@ -11,15 +11,19 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import plot_confusion_matrix
 import numpy as np
+from prettytable import PrettyTable
+
 # np.set_printoptions(threshold=np.inf)
 
 nb_classes = 41
-FILE = 'model2.pth'
+FILE = 'model.pth'
 
+curr = os.path.dirname(__file__)
 
 test = TestingData()
 testset = torch.utils.data.DataLoader(test, batch_size=10, shuffle=False)
 
+diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 
 
 try: 
@@ -55,13 +59,25 @@ total = 0
 
 preds = []
 targets = []
+diseases = []
+
+with open(diseases_path, "r") as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    for idx, rows in enumerate(csv_reader):
+        diseases.append(rows)
+
+
+
+def get_disease_name(index):
+    for disease in diseases:
+        if float(disease[0]) == index:
+            return (disease[1][:30] + '..') if len(disease[1]) > 30 else disease[1]
 
 with torch.no_grad():
     for data in testset:
         X, y = data
         output = net(X)
         for idx, i in enumerate(output):
-            # print(torch.argmax(i), y[idx])
             preds.append(torch.argmax(i).long())
             targets.append(y[idx].squeeze().long())
             if torch.argmax(i) == y[idx]:
@@ -73,14 +89,14 @@ print("Accuracy: ", accuracy)
 
 preds = torch.tensor(preds)
 targets = torch.tensor(targets)
-conf_matrix = confusion_matrix(targets, preds)
+conf_matrix = confusion_matrix(preds, targets)
 conf_matrix = torch.tensor(conf_matrix)
 
-print('Confusion matrix\n', conf_matrix)
+t = PrettyTable(['Class', 'Name', 'TP', 'TN', 'FP', 'FN', 'Sensitivity', 'Specificity', 'Precision', 'F1'])
 
 TP = np.diag(conf_matrix)
 for c in range(nb_classes):
-    idx = torch.ones(nb_classes).byte()
+    idx = torch.ones(nb_classes).bool()
     idx[c] = 0
     # all non-class samples classified as non-class
     TN = conf_matrix[idx.nonzero()[:, None], idx.nonzero()].sum() #conf_matrix[idx[:, None], idx].sum() - conf_matrix[idx, c].sum()
@@ -88,9 +104,20 @@ for c in range(nb_classes):
     FP = conf_matrix[idx, c].sum()
     # all class samples not classified as class
     FN = conf_matrix[c, idx].sum()
+
+    sensitivity = (TP[c] / (TP[c]+FN))
+    specificity = (TN / (TN+FP))
+    precision = (TP[c] / (TP[c] + FP))
+    F1 = 2 * (precision * sensitivity) / (precision + sensitivity)
+
+    # print('Class {}\nTP {}, TN {}, FP {}, FN {}, Sensitivity: {}, Specificity: {}, Precision: {}, F1: {}'.format(
+    #     c, TP[c], TN, FP, FN, sensitivity, specificity, precision, F1))
     
-    print('Class {}\nTP {}, TN {}, FP {}, FN {}'.format(
-        c, TP[c], TN, FP, FN))
+    t.add_row([c, get_disease_name(c), float(TP[c]), float(TN), float(FP), float(FN), float(sensitivity), round(float(specificity), 3), float(precision), round(float(F1), 3)])
+
+
+print(t)
+    
 
 if accuracy > 0.97 and not os.path.exists(FILE):
     torch.save(net.state_dict(), FILE)
