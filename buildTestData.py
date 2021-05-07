@@ -16,7 +16,7 @@ class TestingData(torch.utils.data.Dataset):
 
         testCSVPath = os.path.join(curr, r'data/csv-data/Testing.csv')
 
-        testing_csv_output = os.path.join(curr, r'data/csv-data/processed_testing.csv')
+        testing_csv_output = os.path.join(curr, r'data/csv-data/processed_testing_2.csv')
 
         diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
 

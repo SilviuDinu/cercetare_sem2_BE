@@ -49,3 +49,10 @@ for i, test_item in enumerate(testdata):
         equal_arrays = comparison.all()
         if equal_arrays:
             print("test: %s, train: %s" % (i, j))
+
+# for i, test_item in enumerate(test):
+#     for j, train_item in enumerate(train):
+#         comparison = test_item == train_item
+#         equal_arrays = comparison.all()
+#         if test_item == train_item:
+#             print("test: %s, train: %s" % (i, j))

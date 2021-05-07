@@ -16,7 +16,7 @@ from prettytable import PrettyTable
 # np.set_printoptions(threshold=np.inf)
 
 nb_classes = 41
-FILE = 'model.pth'
+FILE = 'model2.pth'
 
 curr = os.path.dirname(__file__)
 
@@ -42,7 +42,7 @@ except:
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-    for epoch in range(10): # 3 full passes over the data
+    for epoch in range(3): # 3 full passes over the data
         for data in trainset:  # `data` is a batch of data
             X, y = data  # X is the batch of features, y is the batch of targets.
             net.zero_grad()  # sets gradients to 0 before loss calc. You will do this likely every step.
@@ -82,6 +82,8 @@ with torch.no_grad():
             targets.append(y[idx].squeeze().long())
             if torch.argmax(i) == y[idx]:
                 correct += 1
+            else:
+                 print(torch.argmax(i), y[idx])
             total += 1
 
 accuracy = round(correct/total, 3)
