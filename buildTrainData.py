@@ -8,6 +8,24 @@ import numpy as np
 
 curr = os.path.dirname(__file__)
 
+depression_simptoms = [
+    'sadness',
+    'anger',
+    'irritability',
+    'sleep_disturbances',
+    'tiredness',
+    'loss_of_appetite',
+    'increased_appetite',
+    'weight_loss',
+    'weight gain',
+    'anxiety',
+    'guilt', 
+    'lack_of_concentration',
+    'trouble_remembering_things',
+    'thoughts_of_death',
+    'back_pain',
+    'headache'
+]
 class TrainingData(torch.utils.data.Dataset):
 
     def __init__(self):
@@ -27,8 +45,11 @@ class TrainingData(torch.utils.data.Dataset):
 
         xy = np.loadtxt(training_csv_output, delimiter=',', dtype=np.float32, skiprows=1)
 
+        print('xy ==== ', xy)
+
         self.x = torch.from_numpy(xy[:, 0:-1])
         self.y = torch.from_numpy(xy[:, [-1]])
+        # print('self.x, self.y = ', self.x, self.y)
         self.n_samples = xy.shape[0]
         
         # print(self.X)
