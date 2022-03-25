@@ -8,7 +8,7 @@ from net import Net
 from buildTrainData import *
 from buildTestData import *
 
-FILE = 'model_disertatie_2.pth'
+FILE = 'model_disertatie_3.pth'
 
 train = TrainingData()
 trainset = torch.utils.data.DataLoader(train, batch_size=10, shuffle=True)

@@ -67,7 +67,7 @@ def build_processed_file_for_depression(input_path, output_path):
     for i, pacient in enumerate(random_pacients):
         total = 0
         total_not_depression = 0
-        if get_random_value(30):
+        if get_random_value(5):
             for j, symptom in enumerate(pacient):
                 symptom_name = headers[j]
                 if symptom_name not in depression_simptoms and symptom == 1:
@@ -98,20 +98,22 @@ def build_processed_file_for_depression(input_path, output_path):
     with open(output_path, 'w', newline='') as file:
         write = csv.writer(file)
         write.writerows([headers])
-        write.writerows(raw)
+        # change unique to raw to have duplicates
+        unique = [list(item) for item in set(tuple(row) for row in raw)]
+        write.writerows(unique)
 
 
 trainCSVPath = os.path.join(curr, r'data/csv-data/Training_depression.csv')
 training_csv_output = os.path.join(
     curr, r'data/csv-data/Training_despression_processed.csv')
 
-# build_processed_file_for_depression(trainCSVPath, training_csv_output)
+build_processed_file_for_depression(trainCSVPath, training_csv_output)
 
 testCSVPath = os.path.join(curr, r'data/csv-data/Testing_depression.csv')
 testing_csv_output = os.path.join(
     curr, r'data/csv-data/Testing_despression_processed.csv')
 
-# build_processed_file_for_depression(testCSVPath, testing_csv_output)
+build_processed_file_for_depression(testCSVPath, testing_csv_output)
 
 # STATS
 
