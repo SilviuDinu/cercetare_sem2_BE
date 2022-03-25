@@ -7,10 +7,10 @@ import torch.nn.functional as F
 class Net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(132, 64)
+        self.fc1 = nn.Linear(140, 64)
         self.fc2 = nn.Linear(64, 64)
         self.fc3 = nn.Linear(64, 64)
-        self.fc4 = nn.Linear(64, 41)
+        self.fc4 = nn.Linear(64, 42)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))

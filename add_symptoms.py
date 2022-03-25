@@ -45,6 +45,8 @@ def get_random_value(max):
 def build_processed_file_for_depression(input_path, output_path):
     raw = []
     headers = []
+    total_depression_pacients = 0
+
     with open(input_path, "r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for idx, rows in enumerate(csv_reader):
@@ -65,23 +67,25 @@ def build_processed_file_for_depression(input_path, output_path):
     for i, pacient in enumerate(random_pacients):
         total = 0
         total_not_depression = 0
-        for j, symptom in enumerate(pacient):
-            symptom_name = headers[j]
-            if symptom_name not in depression_simptoms and symptom == 1:
-                total_not_depression += 1
-                if get_random_value(60):
-                    pacient[j] = 0
-            if symptom_name in depression_simptoms and symptom == 0:
-                if get_random_value(60):
-                    pacient[j] = 1
-                    total += 1
-                    # print(symptom_name)
-
-        total_positive_depression_symptoms = total / len(depression_simptoms)
-        total_depression_pacients = 0
-        if total_positive_depression_symptoms > 0.51:
+        if get_random_value(30):
+            for j, symptom in enumerate(pacient):
+                symptom_name = headers[j]
+                if symptom_name not in depression_simptoms and symptom == 1:
+                    total_not_depression += 1
+                    if get_random_value(80):
+                        pacient[j] = 0
+                if symptom_name in depression_simptoms and symptom == 0:
+                    if get_random_value(65):
+                        pacient[j] = 1
+                        total += 1
+                        # print(symptom_name)
             pacient[-1] = 'Depression'
             total_depression_pacients += 1
+
+            # total_positive_depression_symptoms = total / \
+            #     len(depression_simptoms)
+            # if total_positive_depression_symptoms > 0.65:
+            #     pacient[-1] = 'Depression'
             # print(pacient[-1])
 
         # print('How many depression from list of depression: {}'.format(total / len(depression_simptoms)))
@@ -101,10 +105,49 @@ trainCSVPath = os.path.join(curr, r'data/csv-data/Training_depression.csv')
 training_csv_output = os.path.join(
     curr, r'data/csv-data/Training_despression_processed.csv')
 
-build_processed_file_for_depression(trainCSVPath, training_csv_output)
+# build_processed_file_for_depression(trainCSVPath, training_csv_output)
 
 testCSVPath = os.path.join(curr, r'data/csv-data/Testing_depression.csv')
 testing_csv_output = os.path.join(
     curr, r'data/csv-data/Testing_despression_processed.csv')
 
-build_processed_file_for_depression(testCSVPath, testing_csv_output)
+# build_processed_file_for_depression(testCSVPath, testing_csv_output)
+
+# STATS
+
+total_training_depression = 0
+total_training = 0
+total_testing_depression = 0
+total_testing = 0
+total_diseases_train = []
+total_diseases_test = []
+
+with open(training_csv_output, "r") as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    for idx, rows in enumerate(csv_reader):
+        if idx > 0:
+            disease_name = rows[-1]
+            total_diseases_train.append(disease_name)
+            if disease_name == 'Depression':
+                total_training_depression += 1
+            total_training += 1
+        else:
+            print('-')
+
+with open(testing_csv_output, "r") as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    for idx, rows in enumerate(csv_reader):
+        if idx > 0:
+            disease_name = rows[-1]
+            total_diseases_test.append(disease_name)
+            if disease_name == 'Depression':
+                total_testing_depression += 1
+            total_testing += 1
+        else:
+            print('-')
+
+print('Training total depression pacients: {} -> {} \nTesting total depression pacients: {} -> {}'.format(total_training_depression,
+      total_training_depression / total_training, total_testing_depression, total_testing_depression / total_testing))
+
+print(len(list(set(total_diseases_train))),
+      len(list(set(total_diseases_test))))

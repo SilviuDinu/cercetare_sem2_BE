@@ -11,7 +11,7 @@ from flask import Response, request
 from flask_cors import CORS, cross_origin
 from net import Net
 
-FILE = 'model.pth'
+FILE = 'model_disertatie_2.pth'
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -56,8 +56,8 @@ def predict():
     net.eval()
 
     curr = os.path.dirname(__file__)
-    path = os.path.join(curr, r'data/csv-data/Testing.csv')
-    diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
+    path = os.path.join(curr, r'data/csv-data/Testing_despression_processed.csv')
+    diseases_path = os.path.join(curr, r'data/csv-data/diseases_disertatie.csv')
 
     with open(path, "r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -71,6 +71,7 @@ def predict():
     for idx, symptom in enumerate(symptoms):
         if type(symptom) == str and symptom != 1:
             symptoms[idx] = 0
+    
 
     # THIS IS TO GRAB FIRST ROW FROM TESTING.CSV AND DOUBLE CHECK THE MODEL
     # with open(path, "r") as csv_file:
@@ -80,8 +81,9 @@ def predict():
     #             symptoms = rows[0:len(rows)-1]
     
     arr = np.array(symptoms, dtype=np.float32)
+    print(symptoms)
     X = torch.from_numpy(arr)
-    output = net(X.view(1, 132))
+    output = net(X.view(1, 140))
     disease_id = torch.argmax(output[0])
 
     with open(diseases_path, "r") as csv_file:

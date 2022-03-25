@@ -31,21 +31,17 @@ class TrainingData(torch.utils.data.Dataset):
     def __init__(self):
 
         curr = os.path.dirname(__file__)
-        trainCSVPath = input("Path to training data: ")
 
-        if not trainCSVPath:
-            trainCSVPath = os.path.join(curr, r'data/csv-data/Training.csv')
+        trainCSVPath = os.path.join(curr, r'data/csv-data/Training_despression_processed.csv')
 
-        training_csv_output = os.path.join(curr, r'data/csv-data/processed_training.csv')
+        training_csv_output = os.path.join(curr, r'data/csv-data/processed_training_disertatie.csv')
 
-        diseases_path = os.path.join(curr, r'data/csv-data/diseases.csv')
+        diseases_path = os.path.join(curr, r'data/csv-data/diseases_disertatie.csv')
 
         if not os.path.exists(training_csv_output):
             self.build_processed(trainCSVPath, training_csv_output, diseases_path)
 
         xy = np.loadtxt(training_csv_output, delimiter=',', dtype=np.float32, skiprows=1)
-
-        print('xy ==== ', xy)
 
         self.x = torch.from_numpy(xy[:, 0:-1])
         self.y = torch.from_numpy(xy[:, [-1]])
@@ -109,7 +105,7 @@ class TrainingData(torch.utils.data.Dataset):
                 for disease in mapped_diseases:
                     if disease[1] == elem:
                         data[index] = disease[0]
-                if elem == '1' or elem == '0':
+                if elem == '1' or elem == '0' or elem == 1 or elem == 0:
                     data[index] = int(elem)
         
         with open(training_csv_output, 'w', newline='') as file:
