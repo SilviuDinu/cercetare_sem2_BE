@@ -8,7 +8,7 @@ from net import Net
 from buildTrainData import *
 from buildTestData import *
 
-FILE = 'model_disertatie_2.pth'
+FILE = 'model_disertatie_3.pth'
 
 train = TrainingData()
 trainset = torch.utils.data.DataLoader(train, batch_size=10, shuffle=True)
@@ -30,7 +30,7 @@ except:
     import torch.optim as optim
 
     loss_function = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(net.parameters(), lr=0.001)
+    optimizer = optim.Adam(net.parameters(),  lr=0.0001, weight_decay=0.00001)
 
     for epoch in range(10):  # 3 full passes over the data
         for data in trainset:  # `data` is a batch of data
@@ -50,7 +50,7 @@ except:
 
 correct = 0
 total = 0
-
+net.eval()
 with torch.no_grad():
     for data in testset:
         X, y = data
@@ -65,5 +65,5 @@ accuracy = round(correct/total, 3)
 print("Accuracy: ", accuracy)
 
 
-if accuracy >= 0.926 and not os.path.exists(FILE):
+if accuracy >= 0.90 and not os.path.exists(FILE):
     torch.save(net.state_dict(), FILE)

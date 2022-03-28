@@ -11,7 +11,7 @@ from flask import Response, request
 from flask_cors import CORS, cross_origin
 from net import Net
 
-FILE = 'model_disertatie_2.pth'
+FILE = 'final_5007_521_0.944acc.pth'
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -83,7 +83,7 @@ def predict():
     arr = np.array(symptoms, dtype=np.float32)
     print(symptoms)
     X = torch.from_numpy(arr)
-    output = net(X.view(1, 140))
+    output = net(X.view(1, 139))
     disease_id = torch.argmax(output[0])
 
     with open(diseases_path, "r") as csv_file:

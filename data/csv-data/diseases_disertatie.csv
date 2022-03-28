@@ -1,42 +1,42 @@
-0,Depression
-1,Varicose veins
-2,Fungal infection
-3,Hepatitis B
-4,Tuberculosis
-5,Chicken pox
-6,Allergy
-7,Chronic cholestasis
-8,Bronchial Asthma
-9,Typhoid
-10,Osteoarthristis
-11,Common Cold
-12,Paralysis (brain hemorrhage)
-13,Hepatitis D
-14,Hepatitis C
-15,Drug Reaction
-16,Hyperthyroidism
-17,Malaria
-18,Migraine
-19,AIDS
-20,Arthritis
-21,Peptic ulcer diseae
-22,GERD
-23,Hypertension 
-24,Pneumonia
-25,Hypoglycemia
-26,Psoriasis
-27,Acne
-28,Impetigo
-29,Jaundice
-30,Hypothyroidism
-31,Heart attack
-32,Gastroenteritis
-33,Hepatitis E
-34,Alcoholic hepatitis
-35,Dimorphic hemmorhoids(piles)
-36,(vertigo) Paroymsal  Positional Vertigo
-37,Urinary tract infection
-38,Diabetes 
-39,Dengue
-40,hepatitis A
-41,Cervical spondylosis
+0,GERD
+1,Hepatitis B
+2,Peptic ulcer diseae
+3,Bronchial Asthma
+4,Alcoholic hepatitis
+5,hepatitis A
+6,Migraine
+7,Hepatitis C
+8,Dimorphic hemmorhoids(piles)
+9,Hyperthyroidism
+10,Hypoglycemia
+11,Urinary tract infection
+12,Fungal infection
+13,Chronic cholestasis
+14,Hepatitis D
+15,Allergy
+16,Depression
+17,Dengue
+18,Drug Reaction
+19,Heart attack
+20,(vertigo) Paroymsal  Positional Vertigo
+21,Hepatitis E
+22,Hypothyroidism
+23,Cervical spondylosis
+24,AIDS
+25,Jaundice
+26,Gastroenteritis
+27,Typhoid
+28,Hypertension 
+29,Osteoarthristis
+30,Chicken pox
+31,Malaria
+32,Tuberculosis
+33,Pneumonia
+34,Paralysis (brain hemorrhage)
+35,Arthritis
+36,Diabetes 
+37,Psoriasis
+38,Varicose veins
+39,Acne
+40,Impetigo
+41,Common Cold
